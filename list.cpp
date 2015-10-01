@@ -1,91 +1,40 @@
-#include <iostream>
-#include "list.h"
-
-using namespace std;
-
-void createList(List &L)
-{
-    First(L) = NULL;
-}
-
-address alokasi(infotype x)
-{
-    address P = new elemenList;
-    Info(P) = x;
-    Next(P) = NULL;
-    return P;
-}
-
-void dealokasi(address &P)
-{
-    delete P;
-}
-
-void insertFirst(List &L, address P)
-{
-    Next(P) = First(L);
-    First(L) = P;
-}
-
-void insertLast(List &L, address P)
-{
-    if(First(L) == NULL)
-    {
-        insertFirst(L,P);
-    }
-    else
-    {
-        address Q = First(L);
-        while(Next(Q) != NULL)
-        {
-            Q = Next(Q);
-        }
-        Next(Q) = P;
-    }
-}
-void insertAfter(List &L, address P, address Prec)
-{
-    if(First(L) == NULL)
-    {
-        insertFirst(L,P);
-    }
-    else
-    {
-        Next(P) = Next(Prec);
-        Next(Prec) = P;
-    }
-}
-
-void deleteFirst(List &L, address &P)
-{
-    P = First(L);
-    First(L) = Next(P);
-    Next(P) = NULL;
-}
-
 void deleteLast(List &L, address &P)
 {
-    if(Next(First(L)) == NULL)
+    if(L.first == NULL)
+    {
+        cout << "List Kosong"<<endl;
+    }
+    else if (L.first->next == NULL)
     {
         deleteFirst(L,P);
     }
-    else
-    {
-        address Q = First(L);
-        while(Next(Next(Q)) != NULL)
-        {
-            Q = Next(Q);
-        }
-        P = Next(Q);
-        Next(Q) = NULL;
+    else {
+        P = L.last;
+        L.last = P->prev;
+        L.last->next = L.first;
+        L.first->prev = L.last;
+        P->prev = NULL;
+        P->next = NULL;
+        dealokasi(P);
     }
 }
 
 void deleteAfter(List &L, address &P, address &Prec)
 {
-    P = Next(Prec);
-    Next(Prec) = Next(P);
-    Next(P) = NULL;
+    address S = L.first;
+    for (int i = 1; i <= countElm(L); i++){
+        if (Prec->info.ID == S->info.ID) {
+            break;
+        }
+        S = S->next;
+    }
+    Prec = S;
+
+    P = Prec->next;
+    Prec->next = P->next;
+    P->next = NULL;
+    P->prev = NULL;
+    dealokasi(P);
 }
 
 address findElm(List L, infotype x){
